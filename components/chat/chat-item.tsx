@@ -21,7 +21,7 @@ export default function ChatItem({ user }: Props) {
       onClick={onClick}
       className={cn(
         "px-2 py-2 mb-2 flex items-center hover:bg-zinc-300 hover:text-zinc-700 dark:hover:text-zinc-300 dark:hover:bg-zinc-800 transition rounded-md cursor-pointer",
-        params.chatId === user.id && "bg-zinc-300 dark:bg-zinc-800"
+        params?.chatId === user.id && "bg-zinc-300 dark:bg-zinc-800"
       )}
     >
       <UserAvatar

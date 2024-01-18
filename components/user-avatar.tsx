@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 type Props = {
   src: string;
-  fallback: string;
+  fallback?: string;
   className?: string;
 };
 
@@ -18,7 +18,7 @@ export default function UserAvatar({ src, fallback, className }: Props) {
       )}
     >
       <AvatarImage src={src} />
-      <AvatarFallback>{fallback}</AvatarFallback>
+      {fallback && <AvatarFallback>{fallback}</AvatarFallback>}
     </Avatar>
   );
 }

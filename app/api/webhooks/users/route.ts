@@ -1,9 +1,9 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
-import { db } from "@/lib/db";
-type EventType = "user.created" | "user.updated" | "user.deleted";
+
 export async function POST(req: Request) {
+  console.log("request hit");
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
@@ -50,39 +50,38 @@ export async function POST(req: Request) {
   }
 
   // Get the ID and type
-  //   const { id } = evt.data;
-  const eventType = evt.type as EventType;
-  console.log("🚀 ~ POST ~ eventType:", eventType);
-  const { id, ...attributes } = evt.data as unknown as User;
-  console.log("🚀 ~ POST ~ vt.data:", evt.data);
+  const { id } = evt.data;
+  const eventType = evt.type;
 
-  if (eventType === "user.created" || eventType === "user.updated") {
-    console.log("🚀 ~ POST ~ attributes:", attributes);
-    await db.user.upsert({
-      where: {
-        externalId: id,
-      },
-      create: {
-        externalId: id as string,
-        email: attributes?.email_addresses?.[0]?.email_address,
-        firstName: attributes?.first_name,
-        lastName: attributes?.last_name,
-        imageUrl: attributes?.image_url,
-        userName: attributes?.username,
-        emailVerified:
-          attributes.email_addresses?.[0]?.verification?.status === "verified",
-      },
-      update: {
-        email: attributes?.email_addresses?.[0]?.email_address,
-        firstName: attributes?.first_name,
-        lastName: attributes?.last_name,
-        imageUrl: attributes?.image_url,
-        userName: attributes?.username,
-        emailVerified:
-          attributes.email_addresses?.[0]?.verification?.status === "verified",
-      },
-    });
-  }
+  console.log(`Webhook with and ID of ${id} and type of ${eventType}`);
+  console.log("Webhook body:", body);
 
   return new Response("", { status: 200 });
 }
+
+// if (eventType === "user.created" || eventType === "user.updated") {
+//   return await db.user.upsert({
+//     where: {
+//       externalId: id,
+//     },
+//     create: {
+//       externalId: id as string,
+//       email: attributes?.email_addresses?.[0]?.email_address,
+//       firstName: attributes?.first_name,
+//       lastName: attributes?.last_name,
+//       imageUrl: attributes?.image_url,
+//       userName: attributes?.username,
+//       emailVerified:
+//         attributes.email_addresses?.[0]?.verification?.status === "verified",
+//     },
+//     update: {
+//       email: attributes?.email_addresses?.[0]?.email_address,
+//       firstName: attributes?.first_name,
+//       lastName: attributes?.last_name,
+//       imageUrl: attributes?.image_url,
+//       userName: attributes?.username,
+//       emailVerified:
+//         attributes.email_addresses?.[0]?.verification?.status === "verified",
+//     },
+//   });
+// }

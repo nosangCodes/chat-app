@@ -2,7 +2,7 @@ import ChatSearch from "./chat-search";
 import { UserButton } from "@clerk/nextjs";
 import ThemeToggle from "../theme-toggle";
 import { db } from "@/lib/db";
-import { currentUser } from "@/lib/current-user";
+import { getCurrentUser } from "@/lib/current-user";
 import { redirect } from "next/navigation";
 import ChatItem from "./chat-item";
 import { Separator } from "../ui/separator";
@@ -11,7 +11,7 @@ import { ScrollArea } from "../ui/scroll-area";
 type Props = {};
 
 export default async function ChatSidebar({}: Props) {
-  const user = await currentUser();
+  const user = await getCurrentUser();
   if (!user) return redirect("/");
   const users = await db.user.findMany({
     where: {

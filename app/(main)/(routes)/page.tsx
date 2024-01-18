@@ -1,12 +1,13 @@
-import { currentUser } from "@/lib/current-user";
+import { getCurrentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
+import { initialUser } from "@/lib/initial-user";
 import { redirectToSignIn } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
 type Props = {};
 
 export default async function page({}: Props) {
-  const currentUserData = await currentUser();
+  const currentUserData = await initialUser();
   if (!currentUserData) return redirectToSignIn();
 
   const user = await db.user.findFirst({
