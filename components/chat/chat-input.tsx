@@ -50,7 +50,6 @@ export default function ChatInput({
           [paramKey]: paramValue,
         },
       });
-      console.log("🚀 ~ onSubmit ~ url:", url)
       await axios.post(url, value);
       form.reset();
       router.refresh();

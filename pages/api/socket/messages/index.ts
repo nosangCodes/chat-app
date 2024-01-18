@@ -46,16 +46,10 @@ export default async function handler(
         userId: user.id,
       },
       include: {
-        conversation: {
-          include: {
-            userOne: true,
-            UserTwo: true,
-          },
-        },
+        user: true,
       },
     });
 
-    console.log("🚀 ~ message:", message);
     const chatKey = `chat:${conversation.id}:messages`;
     res?.socket?.server?.io.emit(chatKey, message);
 
