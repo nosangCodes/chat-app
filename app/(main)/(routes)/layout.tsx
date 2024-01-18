@@ -11,7 +11,7 @@ export default function MainLayout({ children }: Props) {
       <div className="fixed w-[225px] flex flex-col inset-y-0 h-full">
         <ChatSidebar />
       </div>
-      <main>{children}</main>
+      <main className="h-full ml-[225px]">{children}</main>
     </div>
   );
 }

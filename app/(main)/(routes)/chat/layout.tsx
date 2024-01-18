@@ -5,5 +5,5 @@ type Props = {
 };
 
 export default function layout({ children }: Props) {
-  return <div className="ml-[225px] pl-2">{children}</div>;
+  return <div className="h-full">{children}</div>;
 }

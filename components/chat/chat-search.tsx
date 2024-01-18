@@ -11,6 +11,7 @@ import {
 import { User } from "@prisma/client";
 import UserAvatar from "../user-avatar";
 import { getNameAcronym } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 type Props = {
   users: User[];
@@ -18,6 +19,11 @@ type Props = {
 
 export default function ChatSearch({ users }: Props) {
   const [openSearchModal, setOpenSearchModal] = useState(false);
+  const router = useRouter();
+  const onClick = (userId: string) => {
+    router.push(`/chat/${userId}`);
+    setOpenSearchModal(false);
+  };
   return (
     <Fragment>
       <button
@@ -34,17 +40,22 @@ export default function ChatSearch({ users }: Props) {
       <CommandDialog open={openSearchModal} onOpenChange={setOpenSearchModal}>
         <CommandInput placeholder="Search user..." />
         <CommandList>
-          {users.map((user) => (
-            <CommandItem key={user.id}>
-              <div className="flex flex-row items-center">
-                <UserAvatar
-                  src={user?.imageUrl}
-                  fallback={getNameAcronym(user?.firstName, user?.lastName)}
-                />
-                <span className="ml-2 text-base">{user.userName}</span>
-              </div>
-            </CommandItem>
-          ))}
+          {users?.length > 0 &&
+            users?.map((user) => (
+              <CommandItem
+                className="cursor-pointer"
+                onSelect={() => onClick(user.id)}
+                key={user.id}
+              >
+                <div className="flex flex-row items-center">
+                  <UserAvatar
+                    src={user?.imageUrl}
+                    fallback={getNameAcronym(user?.firstName, user?.lastName)}
+                  />
+                  <span className="ml-2 text-base">{user.userName}</span>
+                </div>
+              </CommandItem>
+            ))}
         </CommandList>
       </CommandDialog>
     </Fragment>
