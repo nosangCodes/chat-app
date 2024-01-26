@@ -22,6 +22,9 @@ export default async function ChatIdPage({ params }: Props) {
   const otherUser = await db.user.findUnique({
     where: {
       id: params.chatId,
+      NOT: {
+        id: currentUserData.id,
+      },
     },
   });
 

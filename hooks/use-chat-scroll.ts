@@ -36,7 +36,7 @@ export const useChatScroll = ({
 
   useEffect(() => {
     const bottomDiv = bottomRef?.current;
-    const topDiv = chatRef.current;
+    const topDiv = chatRef?.current;
 
     const shouldAutoScroll = () => {
       if (!hasInitialized && bottomDiv) {
@@ -54,7 +54,7 @@ export const useChatScroll = ({
 
     if (shouldAutoScroll()) {
       setTimeout(() => {
-        bottomRef.current?.scrollIntoView({
+        bottomDiv?.scrollIntoView({
           behavior: "smooth",
         });
       }, 100);

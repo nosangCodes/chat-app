@@ -1,4 +1,5 @@
 "use client";
+import { ElementRef, useEffect, useRef } from "react";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -23,7 +24,9 @@ type Props = {
 };
 
 const formSchema = z.object({
-  message: z.string().min(1),
+  message: z.string().min(1, {
+    message: "",
+  }),
 });
 
 export default function ChatInput({
@@ -33,6 +36,7 @@ export default function ChatInput({
   paramValue,
 }: Props) {
   const router = useRouter();
+  const inputRef = useRef<ElementRef<"input">>(null);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,9 +44,14 @@ export default function ChatInput({
     },
   });
 
-  const isLoading = form.formState.isLoading;
+  const isLoading = form.formState.isLoading || form.formState.isSubmitting;
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [isLoading]);
 
   const onSubmit = async (value: z.infer<typeof formSchema>) => {
+    if (isLoading) return;
     try {
       const url = qs.stringifyUrl({
         url: apiUrl,
@@ -52,7 +61,6 @@ export default function ChatInput({
       });
       await axios.post(url, value);
       form.reset();
-      router.refresh();
     } catch (error) {
       console.error(error);
     }
@@ -75,9 +83,10 @@ export default function ChatInput({
                     type="text"
                     placeholder={`Message ${name}`}
                     {...field}
+                    ref={inputRef}
                   />
                 </FormControl>
-                <FormMessage />
+                {/* <FormMessage /> */}
               </FormItem>
             )}
           />

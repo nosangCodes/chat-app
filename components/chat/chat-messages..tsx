@@ -1,7 +1,13 @@
 "use client";
 import { useChatQuery } from "@/hooks/use-chat-query";
 import { MessageWithUser } from "@/types";
-import React, { ElementRef, Fragment, useRef } from "react";
+import React, {
+  ElementRef,
+  Fragment,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import MessageItem from "./message-item";
 import { useChatSokcet } from "@/hooks/use-chat-socket";
 import { Loader2 } from "lucide-react";
@@ -25,8 +31,10 @@ export default function ChatMessages({
   const queryKey = `chat:${chatId}`;
   const addKey = `chat:${chatId}:messages`;
   const updateKey = `chat:${chatId}:messages:update`;
-
+  const [firstRender, setFirstRender] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
   const chatRef = useRef<ElementRef<"div">>(null);
+
   const bottomRef = useRef<ElementRef<"div">>(null);
 
   const { data, hasNextPage, isFetchingNextPage, status, fetchNextPage } =
@@ -37,6 +45,7 @@ export default function ChatMessages({
       paramValue,
     });
   useChatSokcet({ queryKey, addKey, updateKey });
+
   useChatScroll({
     chatRef,
     bottomRef,
@@ -44,6 +53,14 @@ export default function ChatMessages({
     shouldLoadMore: !isFetchingNextPage && !!hasNextPage,
     count: data?.pages?.[0]?.items?.length ?? 0,
   });
+
+  // useEffect(() => {
+  //   return () => {
+  //     setIsMounted(true);
+  //   };
+  // }, []);
+
+  // if (!isMounted) return null;
 
   return (
     <div
@@ -79,7 +96,7 @@ export default function ChatMessages({
           </Fragment>
         ))}
       </div>
-      <div ref={bottomRef} />
+      <div id="chat-bottom" ref={bottomRef} />
     </div>
   );
 }
